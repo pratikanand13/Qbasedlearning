@@ -1,0 +1,22 @@
+function displayResults(nodes, rounds)
+    figure;
+    subplot(2,1,1);
+    plot([nodes.x], [nodes.y], 'bo', 'MarkerSize', 5);
+    hold on;
+    plot(nodes(end).x, nodes(end).y, 'r*', 'MarkerSize', 10);
+    title('Node Distribution');
+    xlabel('X coordinate');
+    ylabel('Y coordinate');
+    legend('Sensor Nodes', 'Sink Node');
+    
+    subplot(2,1,2);
+    energies = [nodes.energy];
+    bar(energies);
+    title('Remaining Energy of Nodes');
+    xlabel('Node ID');
+    ylabel('Energy (J)');
+    
+    disp(['Simulation completed after ', num2str(rounds), ' rounds']);
+    disp(['Number of dead nodes: ', num2str(sum(energies <= 0))]);
+    disp(['Average remaining energy: ', num2str(mean(energies)), ' J']);
+end

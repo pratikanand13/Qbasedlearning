@@ -1,0 +1,10 @@
+function nodes = initializeNodes(n, xm, ym, zm, Eo)
+    for i = 1:n
+        nodes(i).x = rand() * xm;
+        nodes(i).y = rand() * ym;
+        nodes(i).z = rand() * zm;
+        nodes(i).energy = Eo;
+        nodes(i).type = 'N'; % Normal node
+        nodes(i).holding_time = 0;
+    end
+end

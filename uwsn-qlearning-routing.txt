@@ -1,0 +1,71 @@
+% UWSN Q-Learning Routing Optimization
+
+% Clear workspace and command window
+clear all;
+close all;
+clc;
+
+% Network parameters
+xm = 100; % x-dimension of the deployment area
+ym = 100; % y-dimension of the deployment area
+zm = 100; % z-dimension of the deployment area
+n = 100;  % number of nodes
+
+% Sink node position (at the surface)
+sink.x = 0.5 * xm;
+sink.y = 0.5 * ym;
+sink.z = 0;
+
+% Energy Model parameters
+Eo = 5;  % Initial energy (J)
+ETX = 50e-9;  % Energy for transmitting 1 bit (J)
+ERX = 50e-9;  % Energy for receiving 1 bit (J)
+Efs = 10e-12; % Free space model of transmitter amplifier (J/bit/m^2)
+Emp = 0.0013e-12; % Multi-path model of transmitter amplifier (J/bit/m^4)
+EDA = 5e-9;  % Data aggregation energy (J/bit)
+
+% Q-learning parameters
+alpha = 0.5; % Learning rate
+gamma = 0.9; % Discount factor
+epsilon = 0.1; % Exploration rate
+
+% Packet parameters
+packetSize = 2000; % bits
+
+% Maximum number of rounds
+maxRounds = 1000;
+
+% Initialize nodes
+nodes = initializeNodes(n, xm, ym, zm, Eo);
+
+% Initialize Q-table
+Q = initializeQTable(n);
+
+% Main simulation loop
+for round = 1:maxRounds
+    % Update network state (e.g., energy levels, link quality)
+    nodes = updateNetworkState(nodes);
+    
+    % For each node, make routing decisions using Q-learning
+    for i = 1:n
+        if nodes(i).energy > 0
+            nextHop = selectNextHop(i, nodes, Q, epsilon);
+            [reward, nodes] = transmitPacket(i, nextHop, nodes, sink, packetSize);
+            Q = updateQTable(Q, i, nextHop, reward, alpha, gamma);
+        end
+    end
+    
+    % Apply holding time mechanism
+    nodes = applyHoldingTime(nodes);
+    
+    % Collect statistics
+    [deadNodes, avgEnergy, avgDelay] = collectStatistics(nodes);
+    
+    % Check if all nodes are dead
+    if deadNodes == n
+        break;
+    end
+end
+
+% Display results
+displayResults(nodes, round);

@@ -1,0 +1,29 @@
+function [reward, nodes] = transmitPacket(sourceNode, nextHop, nodes, sink, packetSize)
+    % Calculate distance
+    distance = sqrt((nodes(sourceNode).x - nodes(nextHop).x)^2 + ...
+                    (nodes(sourceNode).y - nodes(nextHop).y)^2 + ...
+                    (nodes(sourceNode).z - nodes(nextHop).z)^2);
+    
+    % Energy consumption for transmission
+    Etx = packetSize * (ETX + Efs * distance^2);
+    nodes(sourceNode).energy = nodes(sourceNode).energy - Etx;
+    
+    % Energy consumption for reception
+    Erx = packetSize * ERX;
+    nodes(nextHop).energy = nodes(nextHop).energy - Erx;
+    
+    % Calculate delay (simplified model)
+    delay = distance / 1500; % Assuming 1500 m/s propagation speed in water
+    
+    % Calculate reward
+    energyEfficiency = 1 / Etx;
+    linkQuality = nodes(nextHop).link_quality;
+    remainingEnergy = nodes(nextHop).energy / Eo;
+    
+    reward = 0.3 * energyEfficiency + 0.3 * linkQuality + 0.4 * remainingEnergy - 0.2 * delay;
+    
+    % Check if packet reached the sink
+    if nextHop == length(nodes) % Assuming sink is the last node
+        reward = reward + 1; % Bonus for reaching the sink
+    end
+end

@@ -1,0 +1,5 @@
+function [deadNodes, avgEnergy, avgDelay] = collectStatistics(nodes)
+    deadNodes = sum([nodes.energy] <= 0);
+    avgEnergy = mean([nodes.energy]);
+    avgDelay = mean([nodes.holding_time]); % This is a simplified delay metric
+end

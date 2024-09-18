@@ -1,0 +1,5 @@
+function Q = updateQTable(Q, currentNode, nextHop, reward, alpha, gamma)
+    % Q-learning update rule
+    Q(currentNode, nextHop) = Q(currentNode, nextHop) + ...
+        alpha * (reward + gamma * max(Q(nextHop, :)) - Q(currentNode, nextHop));
+end

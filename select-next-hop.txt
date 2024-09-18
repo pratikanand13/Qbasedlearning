@@ -1,0 +1,28 @@
+function nextHop = selectNextHop(currentNode, nodes, Q, epsilon)
+    if rand() < epsilon
+        % Exploration: choose a random neighbor
+        neighbors = findNeighbors(currentNode, nodes);
+        if ~isempty(neighbors)
+            nextHop = neighbors(randi(length(neighbors)));
+        else
+            nextHop = currentNode; % Stay at current node if no neighbors
+        end
+    else
+        % Exploitation: choose the best next hop according to Q-table
+        [~, nextHop] = max(Q(currentNode, :));
+    end
+end
+
+function neighbors = findNeighbors(currentNode, nodes)
+    neighbors = [];
+    for i = 1:length(nodes)
+        if i ~= currentNode && nodes(i).energy > 0
+            distance = sqrt((nodes(currentNode).x - nodes(i).x)^2 + ...
+                            (nodes(currentNode).y - nodes(i).y)^2 + ...
+                            (nodes(currentNode).z - nodes(i).z)^2);
+            if distance <= 20 % Assuming a transmission range of 20 units
+                neighbors = [neighbors, i];
+            end
+        end
+    end
+end

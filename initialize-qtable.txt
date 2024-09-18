@@ -1,0 +1,5 @@
+function Q = initializeQTable(n)
+    Q = zeros(n, n); % Initialize Q-table with zeros
+    % You might want to initialize with small random values instead:
+    % Q = rand(n, n) * 0.01;
+end

@@ -1,0 +1,19 @@
+function nodes = applyHoldingTime(nodes)
+    for i = 1:length(nodes)
+        if nodes(i).energy > 0
+            % Calculate holding time based on node's priority
+            priority = nodes(i).energy / Eo; % Simplified priority based on remaining energy
+            nodes(i).holding_time = (1 - priority) * 0.1; % Max holding time of 0.1 seconds
+        end
+    end
+    
+    % Sort nodes by holding time
+    [~, sortedIndices] = sort([nodes.holding_time]);
+    
+    % Apply holding time (simulate delay in transmission)
+    for i = 1:length(sortedIndices)
+        % In a real implementation, you would delay the transmission here
+        % For simulation purposes, we'll just reduce energy to account for idle listening
+        nodes(sortedIndices(i)).energy = nodes(sortedIndices(i)).energy - 0.00001 * nodes(sortedIndices(i)).holding_time;
+    end
+end
